@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2SIDE RP - Changelog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1c1c1c;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        .countdown {
+            font-size: 18px;
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+        .changelog-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: left;
+            position: relative;
+        }
+        .changelog-item {
+            background-color: #444;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .changelog-item h3 {
+            color: #4CAF50;
+            margin: 0;
+        }
+        .changelog-item p {
+            margin: 5px 0;
+        }
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            display: none;
+        }
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>2SIDE RP Changelog</h1>
+    <div class="countdown" id="countdown">Next update in: --:--</div>
+
+    <div class="changelog-container" id="changelog-container">
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="loader"></div>
+        </div>
+        <p>Loading changelog...</p>
+    </div>
+
+    <script>
+        const changelogURL = 'https://raw.githubusercontent.com/Stilxsh/2SIDE-RP/main/changelog.json'; 
+        let lastFetchedTime = 0;
+
+        function fetchChangelog() {
+            const timestamp = new Date().getTime(); 
+            const urlWithTimestamp = `${changelogURL}?t=${timestamp}`;
+
+            document.getElementById("loading-overlay").style.display = "flex"; 
+
+            fetch(urlWithTimestamp, { cache: "no-store" })
+                .then(response => response.json())
+                .then(data => {
+                    const changelogContainer = document.getElementById('changelog-container');
+                    changelogContainer.innerHTML = ''; 
+
+                    if (data && data.changes && data.changes.length > 0) {
+                        data.changes.forEach((change, index) => {
+                            const changelogItem = document.createElement('div');
+                            changelogItem.classList.add('changelog-item');
+
+                            const changeTitle = document.createElement('h3');
+                            changeTitle.textContent = `Change #${index + 1}`;
+                            changelogItem.appendChild(changeTitle);
+
+                            const changeDescription = document.createElement('p');
+                            changeDescription.textContent = change;
+                            changelogItem.appendChild(changeDescription);
+
+                            changelogContainer.appendChild(changelogItem);
+                        });
+                    } else {
+                        changelogContainer.innerHTML = '<p>No changelog available at the moment.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching changelog:', error);
+                    document.getElementById('changelog-container').innerHTML = '<p>Error fetching changelog.</p>';
+                })
+                .finally(() => {
+                    document.getElementById("loading-overlay").style.display = "none"; 
+                });
+        }
+
+        function updateCountdown() {
+            const countdownElement = document.getElementById('countdown');
+            const now = new Date();
+            const secondsUntilNextMinute = 60 - now.getSeconds(); 
+
+            countdownElement.textContent = `Next update in: 00:${secondsUntilNextMinute < 10 ? '0' : ''}${secondsUntilNextMinute}`;
+
+            if (secondsUntilNextMinute === 60) {
+                fetchChangelog();
+            }
+        }
+
+        window.onload = function () {
+            fetchChangelog();
+            setInterval(updateCountdown, 1000); 
+            setInterval(fetchChangelog, 60000);
+        };
+    </script>
+
+</body>
+</html>
