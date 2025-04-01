@@ -89,14 +89,14 @@
 
     <script>
         const changelogURL = 'https://raw.githubusercontent.com/Stilxsh/2SIDE-RP/main/changelog.json'; 
-        let lastFetchedTime = 0;
+        let countdownTime = 60; // Countdown starts at 60 seconds
 
         function fetchChangelog() {
             const timestamp = new Date().getTime(); 
             const urlWithTimestamp = `${changelogURL}?t=${timestamp}`;
             
             const loadingOverlay = document.getElementById("loading-overlay");
-            loadingOverlay.classList.add("active");
+            loadingOverlay.classList.add("active"); // Show loading animation
 
             fetch(urlWithTimestamp, { cache: "no-store" })
                 .then(response => response.json())
@@ -129,27 +129,28 @@
                 })
                 .finally(() => {
                     setTimeout(() => {
-                        loadingOverlay.classList.remove("active");
-                    }, 500); // Delay hiding animation slightly for smooth transition
+                        loadingOverlay.classList.remove("active"); // Hide animation after fetch
+                    }, 1000);
                 });
         }
 
         function updateCountdown() {
             const countdownElement = document.getElementById('countdown');
-            const now = new Date();
-            const secondsUntilNextMinute = 60 - now.getSeconds(); 
 
-            countdownElement.textContent = `Next update in: 00:${secondsUntilNextMinute < 10 ? '0' : ''}${secondsUntilNextMinute}`;
-
-            if (secondsUntilNextMinute === 60) {
-                fetchChangelog();
+            if (countdownTime > 0) {
+                countdownTime--;
+                countdownElement.textContent = `Next update in: 00:${countdownTime < 10 ? '0' : ''}${countdownTime}`;
+            } else {
+                countdownElement.textContent = "Updating now...";
+                countdownTime = 60; // Reset countdown
+                fetchChangelog(); // Trigger changelog update when countdown hits 0
             }
         }
 
         window.onload = function () {
-            fetchChangelog();
-            setInterval(updateCountdown, 1000); 
-            setInterval(fetchChangelog, 60000);
+            fetchChangelog(); // Fetch changelog when the page loads
+            setInterval(updateCountdown, 1000); // Update countdown every second
+            setInterval(fetchChangelog, 60000); // Fetch changelog every 60 seconds
         };
     </script>
 
