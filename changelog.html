@@ -89,7 +89,6 @@
 
     <script>
         const changelogURL = 'https://raw.githubusercontent.com/Stilxsh/2SIDE-RP/main/changelog.json'; 
-        let countdownTime = 1800; // 30 minutes (1800 seconds)
 
         function fetchChangelog() {
             const timestamp = new Date().getTime(); 
@@ -134,25 +133,46 @@
                 });
         }
 
+        function getNextUpdateTime() {
+            const now = new Date();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            // Calculate how many seconds remain until the next 00:00 or 00:30 mark
+            let secondsToNextUpdate;
+
+            if (minutes < 30) {
+                secondsToNextUpdate = (30 - minutes) * 60 - seconds;
+            } else {
+                secondsToNextUpdate = (60 - minutes) * 60 - seconds;
+            }
+
+            return secondsToNextUpdate;
+        }
+
         function updateCountdown() {
             const countdownElement = document.getElementById('countdown');
+            let timeRemaining = getNextUpdateTime();
 
-            if (countdownTime > 0) {
-                const minutes = Math.floor(countdownTime / 60);
-                const seconds = countdownTime % 60;
-                countdownElement.textContent = `Checking for changelog updates in: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-                countdownTime--;
-            } else {
-                countdownElement.textContent = "Checking for changelog updates...";
-                countdownTime = 1800; // Reset countdown to 30 minutes
-                fetchChangelog(); // Trigger changelog update
+            function tick() {
+                if (timeRemaining > 0) {
+                    const minutes = Math.floor(timeRemaining / 60);
+                    const seconds = timeRemaining % 60;
+                    countdownElement.textContent = `Checking for changelog updates in: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                    timeRemaining--;
+                    setTimeout(tick, 1000);
+                } else {
+                    countdownElement.textContent = "Checking for changelog updates...";
+                    fetchChangelog();
+                    setTimeout(() => updateCountdown(), 1000); // Restart countdown after update
+                }
             }
+            tick();
         }
 
         window.onload = function () {
             fetchChangelog(); // Fetch changelog when the page loads
-            setInterval(updateCountdown, 1000); // Update countdown every second
-            setInterval(fetchChangelog, 1800000); // Fetch changelog every 30 minutes (1800000 ms)
+            updateCountdown(); // Start real-time countdown
         };
     </script>
 
