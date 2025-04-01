@@ -78,7 +78,7 @@
 <body>
 
     <h1>2SIDE RP Changelog</h1>
-    <div class="countdown" id="countdown">Next update in: --:--</div>
+    <div class="countdown" id="countdown">Checking for changelog updates...</div>
 
     <div class="changelog-container" id="changelog-container">
         <div class="loading-overlay" id="loading-overlay">
@@ -89,7 +89,7 @@
 
     <script>
         const changelogURL = 'https://raw.githubusercontent.com/Stilxsh/2SIDE-RP/main/changelog.json'; 
-        let countdownTime = 60; // Countdown starts at 60 seconds
+        let countdownTime = 1800; // 30 minutes (1800 seconds)
 
         function fetchChangelog() {
             const timestamp = new Date().getTime(); 
@@ -138,19 +138,21 @@
             const countdownElement = document.getElementById('countdown');
 
             if (countdownTime > 0) {
+                const minutes = Math.floor(countdownTime / 60);
+                const seconds = countdownTime % 60;
+                countdownElement.textContent = `Checking for changelog updates in: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
                 countdownTime--;
-                countdownElement.textContent = `Next update in: 00:${countdownTime < 10 ? '0' : ''}${countdownTime}`;
             } else {
-                countdownElement.textContent = "Updating now...";
-                countdownTime = 60; // Reset countdown
-                fetchChangelog(); // Trigger changelog update when countdown hits 0
+                countdownElement.textContent = "Checking for changelog updates...";
+                countdownTime = 1800; // Reset countdown to 30 minutes
+                fetchChangelog(); // Trigger changelog update
             }
         }
 
         window.onload = function () {
             fetchChangelog(); // Fetch changelog when the page loads
             setInterval(updateCountdown, 1000); // Update countdown every second
-            setInterval(fetchChangelog, 60000); // Fetch changelog every 60 seconds
+            setInterval(fetchChangelog, 1800000); // Fetch changelog every 30 minutes (1800000 ms)
         };
     </script>
 
