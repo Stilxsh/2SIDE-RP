@@ -2,7 +2,15 @@
     "server_status": "In Development",
     "changes": [
         "Server is currently in development. Stay tuned for updates!",
-        "New features are being added, such as dynamic gangs and advanced economy mechanics.",
+        "New freelance jobs added: Bus Driver, Forklift Operator, Garbage Collector, Diving Job, Taxi Driver.",
+        "Pillbox Hospital and LSPD HQ MLOs added for immersive roleplay.",
+        "Inventory system upgraded to OX_Target for better performance and cleaner UI.",
+        "First robbery script added: 7/11 store robbery now live!",
+        "Fueling system upgraded to ox_fuel for smoother vehicle interaction.",
+        "Thirdeye system converted to ox_target for reliable interaction zones.",
+        "Modern banking script implemented with advanced ATM support and wire transfers.",
+        "Advanced housing system added: furniture placement, stash creation, police raids, and realtor role.",
+        "Dynamic gangs and advanced economy mechanics in progress.",
         "Planned release for full public access soon!"
     ]
 }
