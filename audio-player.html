@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Audio Player</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      color: #333;
+      padding: 20px;
+    }
+    .player {
+      max-width: 400px;
+      margin: auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    audio {
+      width: 100%;
+      outline: none;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      padding: 12px 16px;
+      border-top: 1px solid #eee;
+      cursor: pointer;
+    }
+    li:hover {
+      background: #f1f1f1;
+    }
+    li.active {
+      background: #007bff;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="player">
+    <audio id="audio" controls>
+      Your browser does not support the audio element.
+    </audio>
+    <ul id="playlist">
+      <li data-src="https://docs.google.com/uc?export=download&id=YOUR_FILE_ID_1" class="active">Track 1 - Chill Vibes</li>
+      <li data-src="https://docs.google.com/uc?export=download&id=YOUR_FILE_ID_2">Track 2 - Uplift</li>
+    </ul>
+  </div>
+
+  <script>
+    const audio = document.getElementById("audio");
+    const playlist = document.getElementById("playlist");
+    const tracks = playlist.getElementsByTagName("li");
+
+    for (let i = 0; i < tracks.length; i++) {
+      tracks[i].addEventListener("click", function () {
+        for (let j = 0; j < tracks.length; j++) {
+          tracks[j].classList.remove("active");
+        }
+        this.classList.add("active");
+        audio.src = this.getAttribute("data-src");
+        audio.play();
+      });
+    }
+
+    // Start with first track
+    if (tracks.length > 0) {
+      audio.src = tracks[0].getAttribute("data-src");
+    }
+  </script>
+
+</body>
+</html>
